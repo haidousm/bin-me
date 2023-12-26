@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"os"
 
+	"binme.haido.us/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type application struct {
 	logger *slog.Logger
+	bins   *models.BinModel
 }
 
 func main() {
@@ -27,8 +29,10 @@ func main() {
 		os.Exit(1)
 	}
 	defer db.Close()
+
 	app := &application{
 		logger: logger,
+		bins:   &models.BinModel{DB: db},
 	}
 
 	logger.Info("starting server", "addr", *addr)
