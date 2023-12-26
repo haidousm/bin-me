@@ -1,15 +1,17 @@
 {{define "title"}}Bin #{{.Bin.ID}}{{end}}
 
 {{define "main"}}
+    {{with .Bin}}
     <div class='bin'>
         <div class='metadata'>
-            <strong>{{.Bin.Title}}</strong>
-            <span>#{{.Bin.ID}}</span>
+            <strong>{{.Title}}</strong>
+            <span>#{{.ID}}</span>
         </div>
-        <pre><code>{{.Bin.Content}}</code></pre>
+        <pre><code>{{.Content}}</code></pre>
         <div class='metadata'>
-            <time>Created: {{.Bin.Created}}</time>
-            <time>Expires: {{.Bin.Expires}}</time>
+            <time>Created: {{.Created}}</time>
+            <time>Expires: {{.Expires}}</time>
         </div>
     </div>
+    {{end}}
 {{end}}
