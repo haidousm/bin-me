@@ -21,7 +21,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "home.tmpl", templateData{Bins: bins})
+	data := app.newTemplateData(r)
+	data.Bins = bins
+
+	app.render(w, r, http.StatusOK, "home.tmpl", data)
 }
 
 func (app *application) binView(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +44,10 @@ func (app *application) binView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "view.tmpl", templateData{Bin: bin})
+	data := app.newTemplateData(r)
+	data.Bin = bin
+
+	app.render(w, r, http.StatusOK, "view.tmpl", data)
 
 }
 
