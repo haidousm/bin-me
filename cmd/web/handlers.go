@@ -1,10 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"binme.haido.us/internal/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -31,14 +34,24 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
+func (app *application) binView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		app.notFound(w)
 		return
 	}
 
-	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
+	bin, err := app.bins.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	fmt.Fprintf(w, "%+v", bin)
 }
 
 func (app *application) binCreate(w http.ResponseWriter, r *http.Request) {

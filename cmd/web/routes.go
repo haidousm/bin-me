@@ -11,7 +11,7 @@ func (app *application) routes() *http.ServeMux {
 
 	mux.HandleFunc("/", app.home)
 
-	mux.HandleFunc("/bin/view", app.snippetView)
+	mux.HandleFunc("/bin/view", app.binView)
 	mux.HandleFunc("/bin/create", app.binCreate)
 	return mux
 }

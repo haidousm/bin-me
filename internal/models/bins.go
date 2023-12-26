@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -36,7 +37,23 @@ func (m *BinModel) Insert(title string, content string, expires int) (int, error
 }
 
 func (m *BinModel) Get(id int) (Bin, error) {
-	return Bin{}, nil
+	stmt := `SELECT id, title, content, created, expires FROM bins
+    WHERE expires > UTC_TIMESTAMP() AND id = ?`
+
+	row := m.DB.QueryRow(stmt, id)
+
+	var bin Bin
+
+	err := row.Scan(&bin.ID, &bin.Title, &bin.Content, &bin.Created, &bin.Expires)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return Bin{}, ErrNoRecord
+		} else {
+			return Bin{}, err
+		}
+	}
+
+	return bin, nil
 }
 
 func (m *BinModel) Latest() ([]Bin, error) {
