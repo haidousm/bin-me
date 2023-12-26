@@ -57,5 +57,29 @@ func (m *BinModel) Get(id int) (Bin, error) {
 }
 
 func (m *BinModel) Latest() ([]Bin, error) {
-	return nil, nil
+	stmt := `SELECT id, title, content, created, expires FROM bins
+	WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var bins []Bin
+	for rows.Next() {
+		var bin Bin
+		err = rows.Scan(&bin.ID, &bin.Title, &bin.Content, &bin.Created, &bin.Expires)
+		if err != nil {
+			return nil, err
+		}
+		bins = append(bins, bin)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return bins, nil
 }
