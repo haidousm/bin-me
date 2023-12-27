@@ -18,10 +18,11 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	router.HandlerFunc(http.MethodGet, "/", app.home)
-	router.HandlerFunc(http.MethodGet, "/bins/:id", app.binView)
-	router.HandlerFunc(http.MethodGet, "/bin/new", app.binCreate)
-	router.HandlerFunc(http.MethodPost, "/bins", app.binCreatePost)
+	dynamicMiddleware := alice.New(app.sessionManager.LoadAndSave)
+	router.Handler(http.MethodGet, "/", dynamicMiddleware.ThenFunc(app.home))
+	router.Handler(http.MethodGet, "/bins/:id", dynamicMiddleware.ThenFunc(app.binView))
+	router.Handler(http.MethodGet, "/bin/new", dynamicMiddleware.ThenFunc(app.binCreate))
+	router.Handler(http.MethodPost, "/bins", dynamicMiddleware.ThenFunc(app.binCreatePost))
 
 	standardMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
