@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"binme.haido.us/internal/models"
+	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -16,6 +17,7 @@ type application struct {
 	logger        *slog.Logger
 	bins          *models.BinModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -42,6 +44,7 @@ func main() {
 		logger:        logger,
 		bins:          &models.BinModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   form.NewDecoder(),
 	}
 
 	logger.Info("starting server", "addr", *addr)
