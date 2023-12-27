@@ -93,5 +93,7 @@ func (app *application) binCreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	app.sessionManager.Put(r.Context(), "flash", "Bin successfully created!")
+
 	http.Redirect(w, r, fmt.Sprintf("/bins/%d", id), http.StatusSeeOther)
 }
