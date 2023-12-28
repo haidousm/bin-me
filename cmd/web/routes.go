@@ -18,7 +18,7 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	dynamicMiddleware := alice.New(app.sessionManager.LoadAndSave)
+	dynamicMiddleware := alice.New(app.sessionManager.LoadAndSave, noSurf)
 
 	router.Handler(http.MethodGet, "/", dynamicMiddleware.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/bins/:id", dynamicMiddleware.ThenFunc(app.binView))
