@@ -208,9 +208,13 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
-	var form userSignupForm
-	err := app.decodePostForm(r, &form)
+	err := app.sessionManager.RenewToken(r.Context())
 	if err != nil {
-		app.clientError(w, http.StatusBadRequest)
+		app.serverError(w, r, err)
+		return
 	}
+
+	app.sessionManager.Remove(r.Context(), "authenticatedUserID")
+	app.sessionManager.Put(r.Context(), "flash", "You've been logged out successfully!")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
