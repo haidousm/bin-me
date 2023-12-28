@@ -20,9 +20,17 @@ func (app *application) routes() http.Handler {
 
 	dynamicMiddleware := alice.New(app.sessionManager.LoadAndSave)
 	router.Handler(http.MethodGet, "/", dynamicMiddleware.ThenFunc(app.home))
+
 	router.Handler(http.MethodGet, "/bins/:id", dynamicMiddleware.ThenFunc(app.binView))
 	router.Handler(http.MethodGet, "/bin/new", dynamicMiddleware.ThenFunc(app.binCreate))
 	router.Handler(http.MethodPost, "/bins", dynamicMiddleware.ThenFunc(app.binCreatePost))
+
+	router.Handler(http.MethodGet, "/users/signup", dynamicMiddleware.ThenFunc(app.userSignup))
+	router.Handler(http.MethodPost, "/users/signup", dynamicMiddleware.ThenFunc(app.userSignupPost))
+
+	router.Handler(http.MethodGet, "/users/login", dynamicMiddleware.ThenFunc(app.userLogin))
+	router.Handler(http.MethodPost, "/users/login", dynamicMiddleware.ThenFunc(app.userLoginPost))
+	router.Handler(http.MethodPost, "/users/logout", dynamicMiddleware.ThenFunc(app.userLogoutPost))
 
 	standardMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 

@@ -20,6 +20,7 @@ import (
 type application struct {
 	logger         *slog.Logger
 	bins           *models.BinModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -53,6 +54,7 @@ func main() {
 	app := &application{
 		logger:         logger,
 		bins:           &models.BinModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
 		formDecoder:    form.NewDecoder(),
 		sessionManager: sessionManager,
