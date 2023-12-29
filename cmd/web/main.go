@@ -19,8 +19,8 @@ import (
 
 type application struct {
 	logger         *slog.Logger
-	bins           *models.BinModel
-	users          *models.UserModel
+	bins           models.BinModelInterface
+	users          models.UserModelInterface
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager

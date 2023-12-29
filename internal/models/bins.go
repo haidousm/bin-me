@@ -14,6 +14,12 @@ type Bin struct {
 	Expires time.Time
 }
 
+type BinModelInterface interface {
+	Insert(title string, content string, expires int) (int, error)
+	Get(id int) (Bin, error)
+	Latest() ([]Bin, error)
+}
+
 type BinModel struct {
 	DB *sql.DB
 }
