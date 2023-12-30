@@ -1,8 +1,20 @@
 package mocks
 
-import "binme.haido.us/internal/models"
+import (
+	"time"
+
+	"binme.haido.us/internal/models"
+)
 
 type UserModel struct{}
+
+var mockUser = models.User{
+	ID:             1,
+	Name:           "Alice Elica",
+	Email:          "alice@example.com",
+	HashedPassword: []byte("pa$$word"),
+	Created:        time.Now(),
+}
 
 func (m *UserModel) Insert(name, email, password string) error {
 	switch email {
@@ -13,8 +25,17 @@ func (m *UserModel) Insert(name, email, password string) error {
 	}
 }
 
+func (m *UserModel) Get(id int) (models.User, error) {
+	switch id {
+	case 1:
+		return mockUser, nil
+	default:
+		return models.User{}, models.ErrNoRecord
+	}
+}
+
 func (m *UserModel) Authenticate(email, password string) (int, error) {
-	if email == "alice@example.com" && password == "pa$$word" {
+	if email == mockUser.Email && password == string(mockUser.HashedPassword) {
 		return 1, nil
 	}
 

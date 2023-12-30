@@ -34,6 +34,8 @@ func (app *application) routes() http.Handler {
 
 	router.Handler(http.MethodGet, "/bin/new", protectedMiddleware.ThenFunc(app.binCreate))
 	router.Handler(http.MethodPost, "/bins", protectedMiddleware.ThenFunc(app.binCreatePost))
+
+	router.Handler(http.MethodGet, "/account", protectedMiddleware.ThenFunc(app.accountView))
 	router.Handler(http.MethodPost, "/users/logout", protectedMiddleware.ThenFunc(app.userLogoutPost))
 
 	standardMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
