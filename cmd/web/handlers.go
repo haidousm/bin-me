@@ -204,7 +204,12 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.sessionManager.Put(r.Context(), authenticatedUserIDKey.String(), userId)
-	http.Redirect(w, r, "/bin/new", http.StatusSeeOther)
+
+	redirectUrl := app.sessionManager.PopString(r.Context(), redirectURLKey.String())
+	if redirectUrl == "" {
+		redirectUrl = "/bin/new"
+	}
+	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
 }
 
 func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {

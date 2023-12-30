@@ -8,3 +8,4 @@ func (ck contextKey) String() string {
 
 const isAuthenticatedContextKey = contextKey("isAuthenticated")
 const authenticatedUserIDKey = contextKey("authenticatedUserID")
+const redirectURLKey = contextKey("redirectURL")
