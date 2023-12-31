@@ -38,10 +38,8 @@ func (m *UserModel) Insert(name, email, password string) error {
 					 VALUES(?, ?, ?, datetime('now'))`
 	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
 	if err != nil {
-		// TODO: fix check
-		var sqliteErr *sqlite3.Error
-		if errors.As(err, &sqliteErr) {
-			if sqliteErr.ExtendedCode == 2067 {
+		if sqliteErr, ok := err.(sqlite3.Error); ok {
+			if sqlite3.ErrNo(sqliteErr.ExtendedCode) == sqlite3.ErrNo(sqlite3.ErrConstraintUnique) {
 				return ErrDuplicateEmail
 			}
 		}
