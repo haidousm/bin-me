@@ -1,0 +1,2 @@
+CREATE TABLE bins ( id INTEGER NOT NULL PRIMARY KEY, title VARCHAR(100) NOT NULL, content TEXT NOT NULL, created DATETIME NOT NULL, expires DATETIME NOT NULL);
+CREATE INDEX idx_bins_created ON bins(created);

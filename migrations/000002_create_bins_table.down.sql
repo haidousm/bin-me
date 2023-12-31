@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS bins;
+DROP INDEX IF EXISTS idx_bins_created;

@@ -3,10 +3,9 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"strings"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	"github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,12 +35,11 @@ func (m *UserModel) Insert(name, email, password string) error {
 		return err
 	}
 	stmt := `INSERT INTO users (name, email, hashed_password, created)
-					 VALUES(?, ?, ?, UTC_TIMESTAMP())`
+					 VALUES(?, ?, ?, datetime('now'))`
 	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
 	if err != nil {
-		var mySqlError *mysql.MySQLError
-		if errors.As(err, &mySqlError) {
-			if mySqlError.Number == 1062 && strings.Contains(mySqlError.Message, "users_uc_email") {
+		if sqliteErr, ok := err.(sqlite3.Error); ok {
+			if sqlite3.ErrNo(sqliteErr.ExtendedCode) == sqlite3.ErrNo(sqlite3.ErrConstraintUnique) {
 				return ErrDuplicateEmail
 			}
 		}
