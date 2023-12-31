@@ -38,6 +38,8 @@ func TestUserModelExists(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			db := newTestDB(t)
 			m := UserModel{db}
+			m.Insert("Alice Jones", "alice@example.com", "hunter2")
+
 			exists, err := m.Exists(tt.userID)
 
 			assert.Equal(t, exists, tt.want)

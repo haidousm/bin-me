@@ -2,22 +2,50 @@ package models
 
 import (
 	"database/sql"
-	"os"
 	"testing"
+
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func newTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("mysql", "test_web:hunter2@/test_binme?parseTime=true&multiStatements=true")
+func migrateDB(t *testing.T, db *sql.DB, rollback bool) error {
+	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
+	if err != nil {
+		return err
+	}
+
+	fSrc, err := (&file.File{}).Open("../../migrations")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	script, err := os.ReadFile("./testdata/setup.sql")
+	m, err := migrate.NewWithInstance(
+		"file",
+		fSrc,
+		"sqlite3", driver)
 	if err != nil {
-		db.Close()
+		return err
+	}
+	if rollback {
+		err = m.Down()
+	} else {
+		err = m.Up()
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func newTestDB(t *testing.T) *sql.DB {
+	db, err := sql.Open("sqlite3", "test_binme.db")
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = db.Exec(string(script))
+
+	err = migrateDB(t, db, false)
 	if err != nil {
 		db.Close()
 		t.Fatal(err)
@@ -26,12 +54,9 @@ func newTestDB(t *testing.T) *sql.DB {
 	t.Cleanup(func() {
 		defer db.Close()
 
-		script, err := os.ReadFile("./testdata/teardown.sql")
+		err := migrateDB(t, db, true)
 		if err != nil {
-			t.Fatal(err)
-		}
-		_, err = db.Exec(string(script))
-		if err != nil {
+			db.Close()
 			t.Fatal(err)
 		}
 	})
