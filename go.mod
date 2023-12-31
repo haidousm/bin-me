@@ -10,5 +10,6 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/justinas/alice v1.2.0 // indirect
 	github.com/justinas/nosurf v1.1.1 // indirect
+	github.com/mattn/go-sqlite3 v1.14.19 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 )
