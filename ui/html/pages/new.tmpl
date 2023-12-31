@@ -1,7 +1,7 @@
 {{define "title"}}Create a New Bin{{end}}
 
 {{define "main"}}
-<form action='/bins' method='POST'>
+<form action='/bins' method='POST' hx-boost="true">
     <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     <div>
         <label>Title:</label>

@@ -9,7 +9,7 @@
     <div>
         {{if .IsAuthenticated}}
             <a href='/account' hx-boost="true"  hx-swap="outerHTML">Account</a>
-            <form action='/users/logout' method='POST'>
+            <form action='/users/logout' method='POST' hx-boost="true">
                 <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
                 <button>Logout</button>
             </form>

@@ -1,4 +1,4 @@
-const highlightNavbarElem = () => {
+function highlightNavbarElem() {
   const navLinks = document.querySelectorAll("nav a");
   for (let i = 0; i < navLinks.length; i++) {
     const link = navLinks[i];
@@ -8,7 +8,7 @@ const highlightNavbarElem = () => {
       link.classList.remove("live");
     }
   }
-};
+}
 document.body.addEventListener("htmx:afterSwap", function (e) {
   highlightNavbarElem();
 });
