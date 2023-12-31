@@ -83,7 +83,7 @@ func (app *application) binCreatePost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "new.tmpl", data)
+		app.render(w, r, http.StatusOK, "new.tmpl", data)
 		return
 	}
 
@@ -133,7 +133,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl", data)
+		app.render(w, r, http.StatusOK, "signup.tmpl", data)
 		return
 	}
 
@@ -143,7 +143,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 			form.AddFieldError("email", "Email address is already in use")
 			data := app.newTemplateData(r)
 			data.Form = form
-			app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl", data)
+			app.render(w, r, http.StatusOK, "signup.tmpl", data)
 		} else {
 			app.serverError(w, r, err)
 		}
@@ -179,7 +179,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl", data)
+		app.render(w, r, http.StatusOK, "login.tmpl", data)
 		return
 	}
 
@@ -190,7 +190,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 
 			data := app.newTemplateData(r)
 			data.Form = form
-			app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl", data)
+			app.render(w, r, http.StatusOK, "login.tmpl", data)
 		} else {
 			app.serverError(w, r, err)
 		}

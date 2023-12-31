@@ -1,21 +1,21 @@
 {{define "nav"}}
 <nav>
     <div>
-        <a href='/'>Home</a>
+        <a href='/' hx-boost="true"  >Home</a>
         {{if .IsAuthenticated}}
-            <a href='/bin/new'>Create bin</a>
+            <a href='/bin/new' hx-boost="true"  >Create bin</a>
         {{end}}
     </div>
     <div>
         {{if .IsAuthenticated}}
-            <a href='/account'>Account</a>
-            <form action='/users/logout' method='POST'>
+            <a href='/account' hx-boost="true"  >Account</a>
+            <form action='/users/logout' method='POST' hx-boost="true">
                 <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
                 <button>Logout</button>
             </form>
         {{else}}
-            <a href='/users/signup'>Signup</a>
-            <a href='/users/login'>Login</a>
+            <a href='/users/signup' hx-boost="true"  >Signup</a>
+            <a href='/users/login' hx-boost="true"  >Login</a>
         {{end}}
     </div>
 </nav>
