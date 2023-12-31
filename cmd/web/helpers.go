@@ -56,11 +56,15 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 }
 
 func (app *application) newTemplateData(r *http.Request) templateData {
+
+	// if htmx, only render the "main" block
+	onlyPartial := r.Header.Get("HX-Request") == "true"
 	return templateData{
 		CurrentYear:     time.Now().Year(),
 		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
 		IsAuthenticated: app.isAuthenticated(r),
 		CSRFToken:       nosurf.Token(r),
+		OnlyPartial:     onlyPartial,
 	}
 }
 
