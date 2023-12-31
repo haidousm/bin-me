@@ -78,7 +78,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 	logger.Info("starting server", "addr", srv.Addr)
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe()
 	logger.Error(err.Error())
 	os.Exit(1)
 }

@@ -5,4 +5,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . ./
-CMD ["go", "run", "./cmd/web"]
+RUN mkdir bin
+RUN GOOS=linux go build -o ./bin/web ./cmd/web
+
+
+EXPOSE 4000
+
+CMD ["./bin/web"]
