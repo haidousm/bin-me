@@ -27,7 +27,7 @@ type BinModel struct {
 func (m *BinModel) Insert(title string, content string, expires int) (int, error) {
 
 	stmt := `INSERT INTO bins (title, content, created, expires)
-	VALUES(?, ?, datetime('now'), DATE_ADD(datetime('now'), INTERVAL ? DAY))`
+	VALUES(?, ?, datetime('now'), datetime('now', ? || ' days'))`
 
 	result, err := m.DB.Exec(stmt, title, content, expires)
 	if err != nil {

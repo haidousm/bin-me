@@ -29,7 +29,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "file:binme.db", "MySQL data source name")
+	dsn := flag.String("dsn", "file:binme.db", "SQLite3 data source name")
 	debug := flag.Bool("debug", false, "Enable debug mode")
 
 	flag.Parse()
