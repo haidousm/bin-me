@@ -36,7 +36,7 @@ func (m *UserModel) Insert(name, email, password string) error {
 		return err
 	}
 	stmt := `INSERT INTO users (name, email, hashed_password, created)
-					 VALUES(?, ?, ?, UTC_TIMESTAMP())`
+					 VALUES(?, ?, ?, datetime('now'))`
 	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
 	if err != nil {
 		var mySqlError *mysql.MySQLError

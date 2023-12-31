@@ -27,7 +27,7 @@ type BinModel struct {
 func (m *BinModel) Insert(title string, content string, expires int) (int, error) {
 
 	stmt := `INSERT INTO bins (title, content, created, expires)
-	VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+	VALUES(?, ?, datetime('now'), DATE_ADD(datetime('now'), INTERVAL ? DAY))`
 
 	result, err := m.DB.Exec(stmt, title, content, expires)
 	if err != nil {
@@ -44,7 +44,7 @@ func (m *BinModel) Insert(title string, content string, expires int) (int, error
 
 func (m *BinModel) Get(id int) (Bin, error) {
 	stmt := `SELECT id, title, content, created, expires FROM bins
-    WHERE expires > UTC_TIMESTAMP() AND id = ?`
+    WHERE expires > datetime('now') AND id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 
@@ -64,7 +64,7 @@ func (m *BinModel) Get(id int) (Bin, error) {
 
 func (m *BinModel) Latest() ([]Bin, error) {
 	stmt := `SELECT id, title, content, created, expires FROM bins
-	WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+	WHERE expires > datetime('now') ORDER BY id DESC LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
