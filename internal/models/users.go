@@ -23,6 +23,7 @@ type UserModelInterface interface {
 	Get(id int) (User, error)
 	Authenticate(email, password string) (int, error)
 	Exists(id int) (bool, error)
+	PasswordUpdate(id int, currentPassword, newPassword string) error
 }
 
 type UserModel struct {
@@ -99,4 +100,30 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	stmt := "SELECT EXISTS(SELECT true FROM users WHERE id = ?)"
 	err := m.DB.QueryRow(stmt, id).Scan(&exists)
 	return exists, err
+}
+
+// this is too many db reads but idc
+func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) error {
+	user, err := m.Get(id)
+	if err != nil {
+		return err
+	}
+	_, err = m.Authenticate(user.Email, currentPassword)
+	if err != nil {
+		return err
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 12)
+	if err != nil {
+		return err
+	}
+
+	stmt := `UPDATE users
+					 SET hashed_password = ?
+					 WHERE id = ?`
+	_, err = m.DB.Exec(stmt, hashedPassword, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

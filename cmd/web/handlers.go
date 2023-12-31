@@ -247,6 +247,61 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, http.StatusOK, "account.tmpl", templateData)
 }
 
+type updatePasswordForm struct {
+	CurrentPassword         string `form:"currentPassword"`
+	NewPassword             string `form:"newPassword"`
+	NewPasswordConfirmation string `form:"newPasswordConfirmation"`
+	validator.Validator     `form:"-"`
+}
+
+func (app *application) accountUpdatePasswordView(w http.ResponseWriter, r *http.Request) {
+	templateData := app.newTemplateData(r)
+	templateData.Form = updatePasswordForm{}
+	app.render(w, r, http.StatusOK, "password.tmpl", templateData)
+}
+
+func (app *application) accountUpdatePasswordPost(w http.ResponseWriter, r *http.Request) {
+	var form updatePasswordForm
+	err := app.decodePostForm(r, &form)
+
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.CurrentPassword), "currentPassword", "This field cannot be blank")
+
+	form.CheckField(validator.NotBlank(form.NewPassword), "newPassword", "This field cannot be blank")
+	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
+
+	form.CheckField(validator.NotBlank(form.NewPasswordConfirmation), "newPasswordConfirmation", "This field cannot be blank")
+	form.CheckField(validator.PermittedValue(form.NewPasswordConfirmation, form.NewPassword), "newPasswordConfirmation", "Passwords do not match")
+
+	if !form.Valid() {
+		templateData := app.newTemplateData(r)
+		templateData.Form = form
+		app.render(w, r, http.StatusOK, "password.tmpl", templateData)
+		return
+	}
+
+	userId := app.sessionManager.GetInt(r.Context(), authenticatedUserIDKey.String())
+	err = app.users.PasswordUpdate(userId, form.CurrentPassword, form.NewPassword)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddFieldError("currentPassword", "Incorrect password")
+			templateData := app.newTemplateData(r)
+			templateData.Form = form
+			app.render(w, r, http.StatusOK, "password.tmpl", templateData)
+			return
+		}
+		app.serverError(w, r, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Your password has been updated!")
+	http.Redirect(w, r, "/account", http.StatusSeeOther)
+}
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
