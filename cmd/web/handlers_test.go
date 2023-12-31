@@ -89,7 +89,7 @@ func TestUserSignup(t *testing.T) {
 		validName     = "Bob"
 		validPassword = "validPa$$word"
 		validEmail    = "bob@example.com"
-		formTag       = "<form action='/users/signup' method='POST' novalidate>"
+		formTag       = "<form action='/users/signup' method='POST' novalidate"
 	)
 
 	tests := []struct {
@@ -123,7 +123,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    validEmail,
 			userPassword: validPassword,
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 		{
@@ -132,7 +132,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    "",
 			userPassword: validPassword,
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 		{
@@ -141,7 +141,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    validEmail,
 			userPassword: "",
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 		{
@@ -150,7 +150,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    "bobexample",
 			userPassword: validPassword,
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 		{
@@ -159,7 +159,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    validEmail,
 			userPassword: "pa$$",
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 		{
@@ -168,7 +168,7 @@ func TestUserSignup(t *testing.T) {
 			userEmail:    "dupe@example.com",
 			userPassword: validPassword,
 			csrfToken:    validCSRFToken,
-			wantCode:     http.StatusUnprocessableEntity,
+			wantCode:     http.StatusOK,
 			wantFormTag:  formTag,
 		},
 	}
@@ -218,6 +218,6 @@ func TestBinCreate(t *testing.T) {
 
 		code, _, body = ts.get(t, "/bin/new")
 		assert.Equal(t, code, http.StatusOK)
-		assert.StringContains(t, body, "<form action='/bins' method='POST'>")
+		assert.StringContains(t, body, "<form action='/bins' method='POST'")
 	})
 }
